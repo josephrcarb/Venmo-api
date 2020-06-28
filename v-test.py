@@ -15,9 +15,32 @@ def login(name, passw):
 
 #Print out all the transactions from user thats logged in
 def getTransactions(userid):  
+    trans = dict() #{User_id: Paid, Recieved}
     def callback(transactions_list):
         for transaction in transactions_list:
-            print(transaction.payment_id)
+
+            #Paying person is not activeUser
+            if(transaction.actor.id != activeUser.id):
+                 
+                #Person is not currently in history
+                if(transaction.actor.id not in trans):
+                    trans[transaction.actor.id] = [0, transaction.amount]
+                
+                #Person is in history, update total
+                else:
+                    trans[transaction.actor.id][1] += transaction.amount
+
+            #Recieving person is not activeUser
+            elif(transaction.target.id != activeUser.id):
+
+                #Person is not currently in history
+                if(transaction.target.id not in trans):
+                    trans[transaction.target.id] = [transaction.amount, 0]
+
+                #Person is in history, update total
+                else:
+                    trans[transaction.target.id][0] += transaction.amount
+
     venmo.user.get_user_transactions(user_id=userid, callback=callback)
 
 
@@ -30,7 +53,7 @@ def main():
 
     login(sys.argv[1], sys.argv[2])
     getTransactions(activeUser.id)
-
+    
 
     return None
 
