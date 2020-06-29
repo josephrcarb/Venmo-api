@@ -1,26 +1,28 @@
-from venmo_api import Client
-from venmo_api.utils.api_util import get_user_id
+from venmo_api import Client, ApiClient
+from auth_api import AuthenticationApi
+
 import json
 import sys
 
 
 #Login into the Venmo Api through command arguments
 def login(name, passw):
-    global venmo
-    global activeUser
-    access_token = Client.get_access_token(username=name, password=passw)
+    api = AuthenticationApi(ApiClient())
+    access_token = api.login_using_credentials(name, passw)
     venmo = Client(access_token=access_token)
     activeUser = venmo.user.get_my_profile()
 
 
+    return [activeUser, venmo, api]
+
+
 #Print out all the transactions from user thats logged in
-def getTransactions(userid):  
+def getTransactions(aUser, userid):  
     trans = dict() #{User_id: Paid, Recieved}
     def callback(transactions_list):
         for transaction in transactions_list:
-
             #Paying person is not activeUser
-            if(transaction.actor.id != activeUser.id):
+            if(transaction.actor.id != userid):
                  
                 #Person is not currently in history
                 if(transaction.actor.id not in trans):
@@ -31,7 +33,7 @@ def getTransactions(userid):
                     trans[transaction.actor.id][1] += transaction.amount
 
             #Recieving person is not activeUser
-            elif(transaction.target.id != activeUser.id):
+            elif(transaction.target.id != userid):
 
                 #Person is not currently in history
                 if(transaction.target.id not in trans):
@@ -40,8 +42,9 @@ def getTransactions(userid):
                 #Person is in history, update total
                 else:
                     trans[transaction.target.id][0] += transaction.amount
-
-    venmo.user.get_user_transactions(user_id=userid, callback=callback)
+        print(trans)
+    aUser.user.get_user_transactions(user_id=userid, callback=callback)
+    
 
 
 def main():
@@ -51,9 +54,8 @@ def main():
         print("[Error] Use: 'v-test.py [email] [password]'\n")
         return None
 
-    login(sys.argv[1], sys.argv[2])
-    getTransactions(activeUser.id)
-    
+    activeUser, aUser, api = login(sys.argv[1], sys.argv[2])
+    getTransactions(aUser, activeUser.id)
 
     return None
 
