@@ -4,11 +4,13 @@
 
 ## Include
 pip install venmo-api
+pip install flask
 
 ## Description / Use
 
 * **Current Use:** 
-	- "python v-test.py [email] [password]"
+	- "python app.py"
+	- Enter in login credentials into textbox
 
 * **Reason for application:** 
 	- Displays the total amount of money sent and recieved from all the users within the last 50 transactions.
