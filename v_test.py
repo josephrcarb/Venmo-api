@@ -6,18 +6,24 @@ import sys
 
 
 #Login into the Venmo Api through command arguments
+
+#TO-DO: Login does not work. Needs access token from from /access page,
+#therefor function fails and return an error
 def login(name, passw):
     api = AuthenticationApi(ApiClient())
-    access_token = api.login_using_credentials(name, passw)
+    otp_secret = api.login_using_credentials(name, passw)
+
+    return api, otp_secret
+    
+def getAccessToken(api, code, secret):
+    access_token = api.codeRecieved(code, secret)
     venmo = Client(access_token=access_token)
     activeUser = venmo.user.get_my_profile()
 
-
-    return [activeUser, venmo, api]
-
+    return activeUser, venmo
 
 #Print out all the transactions from user thats logged in
-def getTransactions(aUser, userid):  
+def getTransactions(aUser, userid): 
     trans = dict() #{User_id: Paid, Recieved}
     def callback(transactions_list):
         for transaction in transactions_list:
@@ -43,7 +49,9 @@ def getTransactions(aUser, userid):
                 else:
                     trans[transaction.target.id][0] += transaction.amount
         print(trans)
+        return trans
     aUser.user.get_user_transactions(user_id=userid, callback=callback)
+    return trans
     
 
 
@@ -54,8 +62,8 @@ def main():
         print("[Error] Use: 'v-test.py [email] [password]'\n")
         return None
 
-    activeUser, aUser, api = login(sys.argv[1], sys.argv[2])
-    getTransactions(aUser, activeUser.id)
+    # activeUser, aUser, api = login(sys.argv[1], sys.argv[2])
+    # getTransactions(aUser, activeUser.id)
 
     return None
 

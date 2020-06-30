@@ -9,10 +9,8 @@ class AuthenticationApi(object):
 
         self.__device_id = device_id or random_device_id()
         self.__api_client = api_client
-        self.needCode = False
-        self.otpCode = None
 
-    def login_using_credentials(self, username: str, password: str) -> str:
+    def login_using_credentials(self, username: str, password: str):
         """
         Pass your username and password to get an access_token for using the API.
         :param username: <str> Phone, email or username
@@ -41,15 +39,8 @@ class AuthenticationApi(object):
                                               body=body, method='POST', ok_error_codes=[81109])
 
         if response.get('body').get('error'):
-            access_token = self.__two_factor_process(response=response)
-            self.__trust_this_device()
-        else:
-            access_token = response['body']['access_token']
-
-        confirm("Successfully logged in.")
-        print(f"access_token: {access_token}")
-
-        return access_token
+            otp_secret = self.__two_factor_process(response=response)
+        return otp_secret
 
     def __two_factor_process(self, response):
 
@@ -59,15 +50,15 @@ class AuthenticationApi(object):
                                             "(check your password)")
 
         self.__send_text_otp(otp_secret=otp_secret)
-        self.__ask_user_for_otp_password()
-        while(self.needCode is not False and self.otpCode is not None):
-            print("Waiting for OTP Code...")
-        
-        user_otp = self.otpCode
-        
-        access_token = self.__login_using_otp(user_otp, otp_secret)
+
+        return otp_secret
+    
+    def codeRecieved(self, code, secret):
+        access_token = self.__login_using_otp(user_otp=code, otp_secret=secret)
         self.__api_client.update_access_token(access_token=access_token)
 
+        confirm("Successfully logged in.")
+        print(f"access_token: {access_token}")
         return access_token
 
     def __send_text_otp(self, otp_secret):
@@ -89,13 +80,9 @@ class AuthenticationApi(object):
             finally:
                 raise AuthenticationFailedError(f"Failed to send the One-Time-Password to"
                                                 f" your phone number because: {reason}")
-
         return response
 
     
-    def __ask_user_for_otp_password(self):
-        self.needCode = True
-
     def __changeCode(self, change, code):
         self.needCode = change
         self.otpCode = code
