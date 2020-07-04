@@ -4,55 +4,66 @@ from auth_api import AuthenticationApi
 import json
 import sys
 
-
-#Login into the Venmo Api through command arguments
-
-#TO-DO: Login does not work. Needs access token from from /access page,
-#therefor function fails and return an error
-def login(name, passw):
+class Venmo_Data():
+    secret = None
     api = AuthenticationApi(ApiClient())
-    otp_secret = api.login_using_credentials(name, passw)
+    user = None
+    venmo = None
+    trans = dict()
+    loggedIn = False
+    data_trans = dict()
 
-    return api, otp_secret
+    #Login into the Venmo Api
+    def login(self, name, passw):
+        self.secret = self.api.login_using_credentials(name, passw)
     
-def getAccessToken(api, code, secret):
-    access_token = api.codeRecieved(code, secret)
-    venmo = Client(access_token=access_token)
-    activeUser = venmo.user.get_my_profile()
-
-    return activeUser, venmo
+    def getAccessToken(self, code):
+        self.venmo = Client(access_token=self.api.codeRecieved(code, self.secret))
+        self.user = self.venmo.user.get_my_profile()
+        self.loggedIn = True
+        self.getTransactions()
+        print(self.data_trans)
 
 #Print out all the transactions from user thats logged in
-def getTransactions(aUser, userid): 
-    trans = dict() #{User_id: Paid, Recieved}
-    def callback(transactions_list):
-        for transaction in transactions_list:
-            #Paying person is not activeUser
-            if(transaction.actor.id != userid):
-                 
-                #Person is not currently in history
-                if(transaction.actor.id not in trans):
-                    trans[transaction.actor.id] = [0, transaction.amount]
-                
-                #Person is in history, update total
-                else:
-                    trans[transaction.actor.id][1] += transaction.amount
+    def getTransactions(self): 
+        def callback(transactions_list):
+            for transaction in transactions_list:
+                #Paying person is not activeUser
+                if(transaction.actor.id != self.user.id):
+                    
+                    #Person is not currently in history
+                    if(transaction.actor.id not in self.trans):
+                        self.trans[transaction.actor.id] = [0, transaction.amount]
+                    
+                    #Person is in history, update total
+                    else:
+                        self.trans[transaction.actor.id][1] += transaction.amount
 
-            #Recieving person is not activeUser
-            elif(transaction.target.id != userid):
+                #Recieving person is not activeUser
+                elif(transaction.target.id != self.user.id):
 
-                #Person is not currently in history
-                if(transaction.target.id not in trans):
-                    trans[transaction.target.id] = [transaction.amount, 0]
+                    #Person is not currently in history
+                    if(transaction.target.id not in self.trans):
+                        self.trans[transaction.target.id] = [transaction.amount, 0]
 
-                #Person is in history, update total
-                else:
-                    trans[transaction.target.id][0] += transaction.amount
-        print(trans)
-        return trans
-    aUser.user.get_user_transactions(user_id=userid, callback=callback)
-    return trans
+                    #Person is in history, update total
+                    else:
+                        self.trans[transaction.target.id][0] += transaction.amount    
+            self.data_trans = self.trans   
+        self.venmo.user.get_user_transactions(user_id=self.user.id, callback=callback)
     
+    def getTrans(self):
+        return self.data_trans
+
+    def isTrans(self):
+        if(len(self.data_trans) != 0 ):
+            return True
+        return False
+
+    def isApi(self):
+        if(self.api is not None):
+            return True
+        return False
 
 
 def main():

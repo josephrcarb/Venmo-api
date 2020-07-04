@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>V-History Transactions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Transactions page.</h1>
+      <br>
+      {% if table %}
+        <table>
+            {% for t in table %}
+            <tr>
+                {% for i in t %}
+                    <td>{{ i }}</td>
+                {% endfor %}   
+            </tr>
+            {% endfor %}
+        </table>
+      {% endif %}
+      {% if not table %}
+      <p>Please Log-In First.</p> 
+      {% endif %}
+      <form action="" method="post">
+        <input class="btn btn-default" type="submit" value="back">
+      </form>
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+      {% endif %}
+    </div>
+  </body>
+</html>
