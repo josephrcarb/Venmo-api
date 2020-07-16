@@ -12,17 +12,29 @@ class Venmo_Data():
     trans = dict()
     loggedIn = False
     data_trans = dict()
+    aCode = None
 
     #Login into the Venmo Api
     def login(self, name, passw):
         self.secret = self.api.login_using_credentials(name, passw)
     
+    def logout(self):
+        self.loggedIn = False
+        self.api.log_out(self.aCode)
+        self.secret = None
+        self.user = None
+        self.venmo = None
+        self.trans = dict()
+        self.api = AuthenticationApi(ApiClient())
+        self.data_trans = dict()
+        self.aCode = None
+
     def getAccessToken(self, code):
-        self.venmo = Client(access_token=self.api.codeRecieved(code, self.secret))
+        self.aCode = self.api.codeRecieved(code, self.secret)
+        self.venmo = Client(access_token=self.aCode)
         self.user = self.venmo.user.get_my_profile()
         self.loggedIn = True
         self.getTransactions()
-        print(self.data_trans)
 
 #Print out all the transactions from user thats logged in
     def getTransactions(self): 

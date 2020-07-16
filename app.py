@@ -30,6 +30,11 @@ def login():
         if(request.form["submit_login"] == "login"):
             try:
                 #TODO: LOG SOMEONE OUT WHEN RE LOGGING IN
+                if(data.loggedIn is True):
+                    data.logout() #Create new Data Struct
+                    curr.results = None #Create new CurrentData Struct
+                    curr.table = []
+
                 data.login(name=request.form['username'], passw=request.form['password'])
                 return redirect(url_for('access'))
             except HttpCodeError as e:
