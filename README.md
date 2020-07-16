@@ -7,8 +7,12 @@ pip install venmo-api
 pip install flask
 
 ## Description / Use
-
+* **Disclaimer:** 
+	- Any login credentials inputted, are not saved. Entire application runs strictly on localhost and only information is exchanged with the venmo api, no other database.
+	
 * **Current Use:** 
+	- cd into folder with app.py
+	- server run on localhost:5000/
 	- "python app.py"
 	- Enter in login credentials into textbox
 
