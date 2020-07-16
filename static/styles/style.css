@@ -1,0 +1,29 @@
+body {
+    padding-top: 50px;
+    background-color: lightblue;
+    color: white;
+    font-family: mainFont;
+    text-align: center;
+}
+h1{
+    text-: black;
+}
+h2{
+   font-size: smaller;
+   font-family: "Lucida Console"; 
+}
+
+input{
+    text-align: center;
+    font-family: "Lucida Console";
+}
+
+.stroke{
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+@font-face{
+    font-family: mainFont;
+    src: url('Chibold.ttf') format('truetype');
+}

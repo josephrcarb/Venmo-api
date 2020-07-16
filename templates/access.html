@@ -1,18 +1,20 @@
 <html>
   <head>
     <title>V-History Access OTP</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="container">
-      <h1>Please Enter OTP Access Code from your device.</h1>
-      <br>
+      <h1>Access Page</h1>
+      <h2>Please enter the access code from your device.</h2>
       <form action="" method="post">
         <input type="password" placeholder="OTP Code" name="password" value="{{
           request.form.password }}">
         <input class="btn btn-default" type="submit" name="access_login" value="login">
         <input class="btn btn-default" type="submit" name="access_login" value="back">
       </form>
+      <h2>DISCLAIMER: No inputted information is saved. Server is run on localhost.</h2>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}
       {% endif %}

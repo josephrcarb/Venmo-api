@@ -1,12 +1,13 @@
 <html>
   <head>
     <title>V-History login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="container">
-      <h1>Please login</h1>
-      <br>
+      <h1 class="stroke">Login</h1>
+      <h2>Please enter your Venmo credentials</h2>
       <form action="" method="post">
         <input type="text" placeholder="Username" name="username" value="{{
           request.form.username }}">
@@ -14,8 +15,9 @@
           request.form.password }}">
         <input class="btn btn-default" type="submit" name= "submit_login" value="login">
         <input class="btn btn-default" type="submit" name= "submit_login" value="home">
-        <input class="btn btn-default" type="submit" name= "submit_login" value="see transactions">
+        <input class="btn btn-default" type="submit" name= "submit_login" value="transactions">
       </form>
+      <h2>DISCLAIMER: Server is run on localhost. No credentials inputted are saved.</h2>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}
       {% endif %}

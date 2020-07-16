@@ -1,14 +1,16 @@
 <html>
   <head>
     <title>V-History Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="container">
-      <h1>Welcome, proceed to login page.</h1>
-      <br>
+      <h1 class="stroke">Venmo History of Transactions</h1>
+      <h2>By Joseph Carbone</h2>
+      <h2 >A program which summates the last 50 transactions on your Venmo acount, from each distinct user.</h2>
       <form action="" method="post">
-        <input class="btn btn-default" type="submit" name="goto_login" value="Login">
+        <input class="btn btn-default" type="submit" name="goto_login" value="To Login Page">
       </form>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}

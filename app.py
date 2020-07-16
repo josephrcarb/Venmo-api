@@ -9,7 +9,7 @@ class CurrentData():
     results = None
 
 
-app=Flask(__name__)
+app=Flask(__name__, static_folder='static', static_url_path='/static')
 data = Venmo_Data()
 curr = CurrentData()
 
@@ -42,7 +42,7 @@ def login():
                 return redirect(url_for('error'))
         elif(request.form["submit_login"] == "home"):
             return redirect(url_for('home'))
-        elif(request.form["submit_login"] == "see transactions"):
+        elif(request.form["submit_login"] == "transactions"):
             return redirect(url_for('transactions'))
         else:
             pass
