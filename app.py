@@ -60,7 +60,9 @@ def transactions():
             curr.results = results
             for key, value in results.items():
                 temp = []
-                temp.extend([key, value])
+                temp2 = data.getuserProfile(key)
+                userN, picUrl = temp2[0], temp2[1]
+                temp.extend([picUrl, userN, value[0], value[1]])
                 Table.append(temp)
             curr.table = Table
             return render_template('transactions.html', table=curr.table)

@@ -1,25 +1,35 @@
 <html>
   <head>
     <title>V-History Transactions</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style2.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="container">
-      <h1>Transactions page.</h1>
-      <br>
+      <h1 class="stroke">Transactions Page</h1>
       {% if table %}
-        <table>
+      <h2>The last 50 transactions summated</h2>
+        <table class="center">
+            <tr>
+              <th> </th>
+              <th>Username</th>
+              <th>Amount Sent</th>
+              <th>Amount Recieved</th>
+            </tr>
             {% for t in table %}
             <tr>
-                {% for i in t %}
-                    <td>{{ i }}</td>
-                {% endfor %}   
+              <td><img src="{{t[0]}}" width="50" height="50"> </td>
+              
+              <td>{{ t[1] }}</td>
+              <td>${{ t[2] }}</td>
+              <td>${{ t[3] }}</td> 
             </tr>
             {% endfor %}
         </table>
       {% endif %}
       {% if not table %}
-      <p>Please Log-In First.</p> 
+
+      <h2>Please Log In First</h2>
       {% endif %}
       <form action="" method="post">
         <input class="btn btn-default" type="submit" value="back">
