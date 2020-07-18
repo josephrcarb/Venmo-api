@@ -2,13 +2,15 @@ from flask import Flask, render_template, redirect, url_for, request, session
 from v_test import Venmo_Data
 from venmo_api.models.exception import HttpCodeError
 import sys
+import time
 from auth_api import AuthenticationApi
 
+#Current Data Structure to save data when flipping through pages.
 class CurrentData():
     table = []
     results = None
 
-
+#Init
 app=Flask(__name__, static_folder='static', static_url_path='/static')
 data = Venmo_Data()
 curr = CurrentData()
@@ -54,7 +56,7 @@ def transactions():
     Table = []
     if request.method == 'POST':
             return redirect(url_for('login'))
-    while(not data.isTrans()):
+    while(True):
         if(data.isTrans()):
             results = data.getTrans()
             curr.results = results
@@ -98,7 +100,5 @@ def access():
             pass
     return render_template('access.html', error=error)
 
-
 if __name__=="__main__":
-    
     app.run(debug=True)

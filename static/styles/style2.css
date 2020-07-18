@@ -16,14 +16,14 @@ table.center{
     margin-right: auto;
 }
 th{
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #fff;
     padding: 10px;
     text-align: center;
     font-size: smaller;
 }
 td{
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #fff;
     padding: 0px;
     text-align: center;
 }

@@ -4,6 +4,7 @@ from auth_api import AuthenticationApi
 import json
 import sys
 
+#Venmo Data structure 
 class Venmo_Data():
     secret = None
     api = AuthenticationApi(ApiClient())
@@ -19,6 +20,7 @@ class Venmo_Data():
     def login(self, name, passw):
         self.secret = self.api.login_using_credentials(name, passw)
     
+    #Set all data to default values and log out of api
     def logout(self):
         self.loggedIn = False
         self.api.log_out(self.aCode)
@@ -31,19 +33,22 @@ class Venmo_Data():
         self.data_trans = dict()
         self.aCode = None
 
+#init all data struct values upon recieving access code from api
     def getAccessToken(self, code):
         self.aCode = self.api.codeRecieved(code, self.secret)
         self.venmo = Client(access_token=self.aCode)
         self.userApi=self.venmo.user
         self.user = self.venmo.user.get_my_profile()
         self.loggedIn = True
+        #Got get the last 50 trans
         self.getTransactions()
 
+#when called with userid, returns profile pic url and username of that userid
     def getuserProfile(self, uid):
         u = self.userApi.get_user(uid)
         return [u.username, u.profile_picture_url]
 
-#Print out all the transactions from user thats logged in
+#gets all the transactions from user thats logged in
     def getTransactions(self): 
         def callback(transactions_list):
             for transaction in transactions_list:
@@ -70,7 +75,8 @@ class Venmo_Data():
                         self.trans[transaction.target.id][0] += transaction.amount    
             self.data_trans = self.trans   
         self.venmo.user.get_user_transactions(user_id=self.user.id, callback=callback)
-    
+
+#Helper functions   
     def getTrans(self):
         return self.data_trans
 
@@ -85,6 +91,13 @@ class Venmo_Data():
         return False
 
 
+
+
+
+
+        
+######################################
+#OUTDATED MAIN
 def main():
     #Make sure valid arguments
     if(len(sys.argv) != 3):
@@ -96,6 +109,6 @@ def main():
     # getTransactions(aUser, activeUser.id)
 
     return None
-
+#######################################
 if __name__ == '__main__':
     main()
